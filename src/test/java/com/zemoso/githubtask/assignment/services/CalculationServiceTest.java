@@ -19,8 +19,8 @@ public class CalculationServiceTest {
 
     @Test
     public void testResultInt(){
-        String query = "";
-        Assert.assertEquals(0, calculationService.calculateInt(query));
+        String query = "2 3 1 * + 9 -";
+        Assert.assertEquals( -4, calculationService.calculateInt(query));
     }
 
     @Test
