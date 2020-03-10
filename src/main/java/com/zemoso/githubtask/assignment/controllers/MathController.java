@@ -17,6 +17,7 @@ public class MathController {
     @GetMapping("double")
     public @ResponseBody MathResponse calculateQuery(@RequestParam(required = false) String query){
         MathResponse mathResponse = new MathResponse();
+        //TODO - URL encoding 
         mathResponse.setValueDouble(calculationService.calculateDouble(query));
         return mathResponse;
     }

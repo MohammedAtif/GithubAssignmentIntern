@@ -10,35 +10,32 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CalculationServiceTest {
 
-    private CalculationService calculationService;
+	private CalculationService calculationService;
 
-    @Before
-    public void setup(){
-        calculationService = new PostfixCalculationService();
-    }
+	@Before
+	public void setup() {
+		calculationService = new PostfixCalculationService();
+	}
 
-    @Test
-    public void testResultInt(){
-        String query = "";
-        Assert.assertEquals(0, calculationService.calculateInt(query));
-    }
+	@Test
+	public void testResultInt() {
+		
+	}
 
-    @Test
-    public void testResultFloat(){
-        String query = "";
-        Assert.assertEquals(0f, calculationService.calculateFloat(query), 0f);
-    }
+	@Test
+	public void testResultFloat() {
 
-    @Test
-    public void testResultLong(){
-        String query = "";
-        Assert.assertEquals(0, calculationService.calculateLong(query));
-    }
+		
+	}
 
-    @Test
-    public void testResultDouble(){
-        String query = "";
-        Assert.assertEquals(0, calculationService.calculateDouble(query), 0);
-    }
+	@Test
+	public void testResultLong() {
+		
+	}
+
+	@Test
+	public void testResultDouble() {
+
+	}
 
 }
