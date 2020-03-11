@@ -3,6 +3,7 @@ package com.zemoso.githubtask.assignment.services.impl;
 import com.zemoso.githubtask.assignment.services.CalculationService;
 import org.springframework.stereotype.Service;
 
+import java.util.MissingFormatArgumentException;
 import java.util.Stack;
 
 @Service
@@ -25,98 +26,115 @@ public class PostfixCalculationService implements CalculationService {
 
     @Override
     public double calculateDouble(String expression) {
-        if(expression.length()==0)
-            return -1;
-        expression = expression.trim();
-        char[] tokens = expression.toCharArray();
-        char lastchar = tokens[tokens.length - 1];
-        if(!(lastchar >= '0' && lastchar <= '9') && lastchar!=')')
-            return -1;
+            char[] chars = expression.toCharArray();
 
-        Stack<Double> operand = new Stack<>();
-        Stack<Character> operator = new Stack<>();
+            Stack<Double> operand = new Stack<Double>();
+            Stack<Character> operator = new Stack<Character>();
 
-        for (int i = 0; i < tokens.length; i++) {
+            int count_left = 0, count_right = 0, count_operators = 0, count_operands = 0;
 
-            if (tokens[i] == ' ')
-                continue;
+            for (int i = 0; i < chars.length; i++)
+            {
+                // Current chars is a whitespace, skip it
+                if (chars[i] == ' ')
+                    continue;
 
-            if ((tokens[i] >= '0' && tokens[i] <= '9') || tokens[i] == '.') {
-                StringBuffer stringBuffer = new StringBuffer();
-
-                while (i < tokens.length && ((tokens[i] >= '0' && tokens[i] <= '9') || tokens[i] == '.'))
-                    stringBuffer.append(tokens[i++]);
-                int count = 0;
-                for(int j = 0; j < stringBuffer.length(); j++) {
-                    if(stringBuffer.charAt(j) == '.')
-                        count++;
-                    if(count > 1)
-                        return -1;
-                }
-                operand.push(Double.parseDouble(stringBuffer.toString()));
-                if(i != tokens.length)
+                // Current chars is a positive number, or a negative number, or even a decimal then push it to stack for numbers
+                if ((chars[i] >= '0' && chars[i] <= '9') || chars[i]=='.' || (chars[i]=='-' && i==0) || (chars[i]=='-' && chars[i-1]=='(') )
+                {
+                    StringBuffer num = new StringBuffer();
+                    if((chars[i]=='-' && i==0) || (chars[i]=='-' && chars[i-1]=='('))
+                    {
+                        num.append('-');
+                        i++;
+                    }
+                    // There may be more than one digits in number
+                    while (i < chars.length && ((chars[i] >= '0' && chars[i] <= '9')|| chars[i]=='.')) {
+                        num.append(chars[i++]);
+                    }
                     i--;
-            }
-
-            else if (tokens[i] == '(')
-                operator.push(tokens[i]);
-
-            else if (tokens[i] == ')') {
-
-                while (operator.size() > 0 && operator.peek() != '(')
-                    operand.push(applyOp(operator.pop(), operand.pop(), operand.pop()));
-                if(operator.size() == 0 || (operator.size() > 0 && operator.peek() != '('))
-                    return -1;
-                operator.pop();
-
-            }
-
-            else if (tokens[i] == '+' || tokens[i] == '-' || tokens[i] == '*' || tokens[i] == '/') {
-                if(tokens[i - 1] == '+' || tokens[i - 1] == '-' || tokens[i - 1] == '*' || tokens[i - 1] == '/')
-                    return -1;
-
-                while (!operator.empty() && precedence(tokens[i], operator.peek())) {
-                    if(operand.size() < 2)
-                        return -1;
-                    operand.push(applyOp(operator.pop(), operand.pop(), operand.pop()));
+                    count_operands++;
+                    operand.push(Double.parseDouble(num.toString()));
                 }
 
-                operator.push(tokens[i]);
+                else if (chars[i] == '(') {
+                    operator.push(chars[i]);
+                    count_left++;
+                }
+
+
+                else if (chars[i] == ')')
+                {
+                    count_right++;
+                    while (operator.peek() != '(') {
+                        operand.push(applyOp(operator.pop(), operand.pop(), operand.pop()));
+                    }
+                    operator.pop();
+                }
+
+                // Current chars is an operator.
+                else if (chars[i] == '+' || chars[i] == '-' || chars[i] == '*' || chars[i] == '/' || chars[i] == '^')
+                {
+                    count_operators++;
+                    while (!operator.empty() && precedence(chars[i]) <= precedence(operator.peek())) {
+                        if (operand.size()<=1) {
+                            throw new
+                                    MissingFormatArgumentException("Syntax error");
+                        }
+                        operand.push(applyOp(operator.pop(), operand.pop(), operand.pop()));
+                    }
+
+                    // Push current chars to 'operator'.
+                    operator.push(chars[i]);
+                }
             }
-            else {
-                return -1;
+
+
+            if (count_left != count_right) {
+                throw new
+                        MissingFormatArgumentException("Missing parenthesis");
             }
+            if (count_operators != count_operands-1) {
+                throw new
+                        MissingFormatArgumentException("Syntax error");
+            }
+
+            // Entire expression has been parsed, apply remaining operators
+            // on remaining operands in stacks.
+            while (!operator.empty()) {
+                operand.push(applyOp(operator.pop(), operand.pop(), operand.pop()));
+            }
+
+            // Top of 'operand' contains result, return it
+            return operand.pop();
         }
 
-        if(operator.size() > 0 && operand.size() < 2)
-            return -1;
-        while (!operator.empty())
-            operand.push(applyOp(operator.pop(), operand.pop(), operand.pop()));
-        double answer = operand.pop();
-        return answer;
-    }
-
-    public static int getPrecedence(char operator) {
-        switch(operator) {
+    // Returns the precedence of each operator,
+    // relative to another.
+    private int precedence(char ch)
+    {
+        switch (ch)
+        {
             case '+':
-            case '-':
                 return 1;
-            case '*':
-            case '/':
+            case '-':
                 return 2;
-            case '(':
-            case ')':
-                return 0;
+            case '*':
+                return 3;
+            case '/':
+                return 4;
+            case '^':
+                return 5;
         }
-        return 0;
+        return -1;
+
     }
 
-    public static boolean precedence(char op1, char op2) {
-        return getPrecedence(op1) <= getPrecedence(op2);
-    }
+    private double applyOp(char op, double b, double a)
+    {
 
-    public static double applyOp(char op, double b, double a) {
-        switch (op) {
+        switch (op)
+        {
             case '+':
                 return a + b;
             case '-':
@@ -124,9 +142,13 @@ public class PostfixCalculationService implements CalculationService {
             case '*':
                 return a * b;
             case '/':
-                if (b == 0)
-                    return -1;
+                if (b == 0) {
+                    throw new
+                            UnsupportedOperationException("Cannot divide by zero");
+                }
                 return a / b;
+            case '^':
+                return (double)Math.pow(a,b);
         }
         return 0;
     }
