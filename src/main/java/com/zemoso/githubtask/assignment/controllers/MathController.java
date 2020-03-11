@@ -15,9 +15,31 @@ public class MathController {
     }
 
     @GetMapping("double")
-    public @ResponseBody MathResponse calculateQuery(@RequestParam(required = false) String query){
+    public @ResponseBody MathResponse calculateDoubleQuery(@RequestParam(required = false) String query){
+    	System.out.println(query);
         MathResponse mathResponse = new MathResponse();
         mathResponse.setValueDouble(calculationService.calculateDouble(query));
+        return mathResponse;
+    }
+    @GetMapping("int")
+    public @ResponseBody MathResponse calculateIntQuery(@RequestParam(required = false) String query){
+    	System.out.println(query);
+        MathResponse mathResponse = new MathResponse();
+        mathResponse.setValueInt(calculationService.calculateInt(query));
+        return mathResponse;
+    }
+    @GetMapping("long")
+    public @ResponseBody MathResponse calculateLongQuery(@RequestParam(required = false) String query){
+    	System.out.println(query);
+        MathResponse mathResponse = new MathResponse();
+        mathResponse.setValueLong(calculationService.calculateLong(query));
+        return mathResponse;
+    }
+    @GetMapping("float")
+    public @ResponseBody MathResponse calculateFloatQuery(@RequestParam(required = false) String query){
+    	System.out.println(query);
+        MathResponse mathResponse = new MathResponse();
+        mathResponse.setValueFloat(calculationService.calculateFloat(query));
         return mathResponse;
     }
 

@@ -8,9 +8,42 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MathResponse {
-    private Integer valueInt;
+	
+	private Integer valueInt;
     private Float valueFloat;
-
     private Long valueLong;
     private Double valueDouble;
+    private String value;
+    
+    public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
+	public Integer getValueInt() {
+		return valueInt;
+	}
+	public void setValueInt(Integer valueInt) {
+		this.valueInt = valueInt;
+	}
+	public Float getValueFloat() {
+		return valueFloat;
+	}
+	public void setValueFloat(Float valueFloat) {
+		this.valueFloat = valueFloat;
+	}
+	public Long getValueLong() {
+		return valueLong;
+	}
+	public void setValueLong(Long valueLong) {
+		this.valueLong = valueLong;
+	}
+	public Double getValueDouble() {
+		return valueDouble;
+	}
+	public void setValueDouble(Double valueDouble) {
+		this.valueDouble = valueDouble;
+	}
+	
 }
