@@ -8,7 +8,7 @@ public class PostfixCalculationService implements CalculationService {
 
     ExpressionEvaluator expressionEvaluator;
 
-    PostfixCalculationService(){
+    public PostfixCalculationService(){
         expressionEvaluator=new ExpressionEvaluator();
     }
 
