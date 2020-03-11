@@ -6,23 +6,30 @@ import org.springframework.stereotype.Service;
 @Service
 public class PostfixCalculationService implements CalculationService {
 
-    @Override
+	private Calculator calculator;
+	
+	public PostfixCalculationService() {
+		calculator = new Calculator();
+	}
+	
+	@Override
     public int calculateInt(String input) {
-        return 0;
-    }
-
-    @Override
+		return (int)calculator.evaluate(input);
+	}
+	
+	@Override
     public float calculateFloat(String input) {
-        return 0;
-    }
-
-    @Override
+		return (float)calculator.evaluate(input);
+	}
+	
+	@Override
     public long calculateLong(String input) {
-        return 0;
-    }
-
-    @Override
+		return (long)calculator.evaluate(input);
+	}
+	
+	@Override
     public double calculateDouble(String input) {
-        return 0;
-    }
+		return calculator.evaluate(input);
+	}
+	
 }
