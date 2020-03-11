@@ -15,10 +15,34 @@ public class MathController {
     }
 
     @GetMapping("double")
-    public @ResponseBody MathResponse calculateQuery(@RequestParam(required = false) String query){
+    public @ResponseBody MathResponse calculateQueryDouble(@RequestParam(required = false) String query){
         MathResponse mathResponse = new MathResponse();
-        mathResponse.setValueDouble(calculationService.calculateDouble(query));
+       mathResponse.setValueDouble(calculationService.calculateDouble(query));
+     // mathResponse.setValueInt(calculationService.calculateInt(query));
         return mathResponse;
     }
+    @GetMapping("int")
+    public @ResponseBody MathResponse calculateQueryInt(@RequestParam(required = false) String query){
+        MathResponse mathResponse = new MathResponse();
+        mathResponse.setValueInt(calculationService.calculateInt(query));
+        // mathResponse.setValueInt(calculationService.calculateInt(query));
+        return mathResponse;
+    }
+    @GetMapping("float")
+    public @ResponseBody MathResponse calculateQueryFloat(@RequestParam(required = false) String query){
+        MathResponse mathResponse = new MathResponse();
+        mathResponse.setValueFloat(calculationService.calculateFloat(query));
+        // mathResponse.setValueInt(calculationService.calculateInt(query));
+        return mathResponse;
+    }
+    @GetMapping("long")
+    public @ResponseBody MathResponse calculateQueryLong(@RequestParam(required = false) String query){
+        MathResponse mathResponse = new MathResponse();
+        mathResponse.setValueLong(calculationService.calculateLong(query));
+        // mathResponse.setValueInt(calculationService.calculateInt(query));
+        return mathResponse;
+    }
+
+
 
 }
