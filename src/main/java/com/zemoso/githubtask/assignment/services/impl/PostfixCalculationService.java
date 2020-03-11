@@ -9,7 +9,51 @@ import java.util.Stack;
 
 @Service
 public class PostfixCalculationService implements CalculationService {
-
+    public int checkPrecedence(char operator) {
+        if (operator == '*' || operator == '/') return 2;
+        else if (operator == '+' || operator == '-') return 1;
+        else return 0;
+    }
+    public boolean isOperator(char operator){
+        if(operator == '+' || operator == '-' || operator == '*' || operator == '/') return true;
+        return false;
+    }
+    public String infixToPostfix(String input){
+        String output = "";
+        Stack<Character> characterStack = new Stack<>();
+        characterStack.push('(');
+        input += ')';
+        int i = 0;
+        for (; i < input.length(); i++) {
+            String temp = "";
+            if (input.charAt(i) == '.' || (input.charAt(i) >= 48 && input.charAt(i) <= 57)) {
+                for (; i < input.length(); i++) {
+                    if (input.charAt(i) == '.' || (input.charAt(i) >= 48 && input.charAt(i) <= 57)) {
+                        temp += input.charAt(i);
+                    }
+                    else {
+                        output += temp + ",";
+                        i--;
+                        break;
+                    }
+                }
+            } else if (isOperator(input.charAt(i))) {
+                char x = characterStack.pop();
+                while (isOperator(input.charAt(i))  &&  characterStack.size() > 0 && isOperator(x) && checkPrecedence(x) >= checkPrecedence(input.charAt(i))) {
+                    output += x + ",";
+                    x = characterStack.pop();
+                }
+                characterStack.push(x);
+                characterStack.push(input.charAt(i));
+            } else if (input.charAt(i) == ')') {
+                while (characterStack.size() > 0 && characterStack.peek() != '(') {
+                    output += characterStack.peek() + ",";
+                    characterStack.pop();
+                }
+            }
+        }
+        return output;
+    }
     public boolean postfixValidator(String[] arr) {
         for (String s : arr) {
             if (s == null) {
@@ -27,8 +71,21 @@ public class PostfixCalculationService implements CalculationService {
         return true;
     }
 
+    public boolean infixValidator(String input) {
+        for(int i=0;i<input.length();i++){
+            if(isOperator(input.charAt(i)) || input.charAt(i) == '.' || (input.charAt(i) >= 48 && input.charAt(i) <= 57) ||
+                    input.charAt(i) == '(' || input.charAt(i) == ')') continue;
+            else return false;
+        }
+        return true;
+    }
+
     @Override
     public int calculateInt(String input) throws InvalidPostfixException {
+        if(!infixValidator(input)) {
+            throw new InvalidPostfixException("Invalid Postfix Expression - Service");
+        };
+        input = infixToPostfix(input);
         String[] arr = input.split(",");
         if(!postfixValidator(arr)) {
             throw new InvalidPostfixException("Invalid Postfix Expression - Service");
@@ -46,8 +103,13 @@ public class PostfixCalculationService implements CalculationService {
                     stack.push(var1 - var2);
                 if (s.equals("*"))
                     stack.push(var1 * var2);
-                if (s.equals("/"))
-                    stack.push(var1 / var2);
+                try {
+                    if (s.equals("/"))
+                        stack.push(var1 / var2);
+                }
+                catch(ArithmeticException e){
+                    throw new InvalidPostfixException("Invalid Postfix Expression - Service");
+                }
             } else {
                 stack.push(Integer.parseInt(s));
             }
@@ -58,6 +120,10 @@ public class PostfixCalculationService implements CalculationService {
 
     @Override
     public float calculateFloat(String input) throws InvalidPostfixException {
+        if(!infixValidator(input)) {
+            throw new InvalidPostfixException("Invalid Postfix Expression - Service");
+        };
+        input = infixToPostfix(input);
         String[] arr = input.split(",");
         if(!postfixValidator(arr)) {
             throw new InvalidPostfixException("Invalid Postfix Expression - Service");
@@ -75,8 +141,13 @@ public class PostfixCalculationService implements CalculationService {
                     stack.push(var1 - var2);
                 if (s.equals("*"))
                     stack.push(var1 * var2);
-                if (s.equals("/"))
-                    stack.push(var1 / var2);
+                try {
+                    if (s.equals("/"))
+                        stack.push(var1 / var2);
+                }
+                catch(ArithmeticException e){
+                    throw new InvalidPostfixException("Invalid Postfix Expression - Service");
+                }
             } else {
                 stack.push(Float.parseFloat(s));
             }
@@ -87,6 +158,10 @@ public class PostfixCalculationService implements CalculationService {
 
     @Override
     public long calculateLong(String input) throws InvalidPostfixException {
+        if(!infixValidator(input)) {
+            throw new InvalidPostfixException("Invalid Postfix Expression - Service");
+        };
+        input = infixToPostfix(input);
         String[] arr = input.split(",");
         if(!postfixValidator(arr)) {
             throw new InvalidPostfixException("Invalid Postfix Expression - Service");
@@ -104,8 +179,13 @@ public class PostfixCalculationService implements CalculationService {
                     stack.push(var1 - var2);
                 if (s.equals("*"))
                     stack.push(var1 * var2);
-                if (s.equals("/"))
-                    stack.push(var1 / var2);
+                try {
+                    if (s.equals("/"))
+                        stack.push(var1 / var2);
+                }
+                catch(ArithmeticException e){
+                    throw new InvalidPostfixException("Invalid Postfix Expression - Service");
+                }
             } else {
                 stack.push(Long.parseLong(s));
             }
@@ -116,6 +196,10 @@ public class PostfixCalculationService implements CalculationService {
 
     @Override
     public double calculateDouble(String input) throws InvalidPostfixException {
+        if(!infixValidator(input)) {
+            throw new InvalidPostfixException("Invalid Postfix Expression - Service");
+        };
+        input = infixToPostfix(input);
         String[] arr = input.split(",");
         if(!postfixValidator(arr)) {
             throw new InvalidPostfixException("Invalid Postfix Expression - Service");
@@ -133,8 +217,13 @@ public class PostfixCalculationService implements CalculationService {
                     stack.push(var1 - var2);
                 if (s.equals("*"))
                     stack.push(var1 * var2);
-                if (s.equals("/"))
-                    stack.push(var1 / var2);
+                try {
+                    if (s.equals("/"))
+                        stack.push(var1 / var2);
+                }
+                catch(ArithmeticException e){
+                    throw new InvalidPostfixException("Invalid Postfix Expression - Service");
+                }
             } else {
                 stack.push(Double.parseDouble(s));
             }
