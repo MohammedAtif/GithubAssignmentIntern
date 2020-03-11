@@ -4,7 +4,7 @@ import com.zemoso.githubtask.assignment.services.CalculationService;
 import org.springframework.stereotype.Service;
 
 @Service
-class PostfixCalculationService implements CalculationService {
+public class PostfixCalculationService implements CalculationService {
 
     @Override
     public int calculateInt(String input) {
@@ -110,5 +110,5 @@ class PostfixCalculationService implements CalculationService {
         else
             return true;
     }
-}
+
 }
